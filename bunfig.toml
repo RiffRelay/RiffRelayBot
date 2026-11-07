@@ -1,0 +1,9 @@
+[install]
+workspace = false
+
+[install.trustedDependencies]
+discord.js = true
+listenbrainz-api = true
+
+[test]
+root = "."

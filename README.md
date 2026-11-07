@@ -1,6 +1,8 @@
-# ListenBrainzBot
+# RiffRelay
 
-An fmbot-style ListenBrainz Discord bot. Every command works as both a **slash command** and a **prefix command** (`!` by default), except `login` (slash-only — it takes a secret token, so the prefix handler refuses to run it to keep tokens out of chat history). All output is delivered as Discord embeds, composed with small React-style display components rendered to Components V2 payloads.
+![RiffRelay banner](https://raw.githubusercontent.com/ListenBrainzBot/Branding/main/assets/riffrelay-banner.png)
+
+RiffRelay is an independent, unofficial Discord companion for music-listening history on ListenBrainz. Every command works as both a **slash command** and a **prefix command** (`!` by default), except `login` (slash-only — it takes a secret token, so the prefix handler refuses to run it to keep tokens out of chat history). All output is delivered as Discord embeds, composed with small React-style display components rendered to Components V2 payloads.
 
 The bot ships as a **single compiled artifact** (`dist/bot.js`) produced by its own compiler (`scripts/compiler.ts`): bundled, minified and string-obfuscated. It does not run from the raw source tree in production.
 
@@ -13,7 +15,7 @@ The bot ships as a **single compiled artifact** (`dist/bot.js`) produced by its 
 - **Exploration** — artist/album/track pages with MusicBrainz metadata and cover art, `mood`, `fresh` (new releases), `search`.
 - **Social** — `similar` users and compare your taste with someone else.
 - **Encrypted storage** — user ListenBrainz tokens encrypted with AES-256-GCM (see Security below).
-- **Presence** — stays in Do Not Disturb and rotates through music and scrobbling activities.
+- **Presence** — stays in Do Not Disturb and rotates through music-listening activities.
 
 ## Requirements
 
@@ -31,7 +33,7 @@ bun run build          # compile dist/bot.js (minified + obfuscated)
 bun run start          # run the compiled artifact
 ```
 
-`listenbrainz-api` is pulled in as a git dependency from
+`listenbrainz-api` is installed as a package dependency from
 [`ListenBrainzBot/listenbrainz-api`](https://github.com/ListenBrainzBot/listenbrainz-api)
 and bundled straight into `dist/bot.js`.
 
@@ -72,7 +74,7 @@ User ListenBrainz tokens are encrypted with **AES-256-GCM** before they touch di
 ## Repository layout
 
 ```
-ListenBrainzBot
+RiffRelay
 ├── src/          → bot source (commands, display renderer, db, handlers)
 ├── scripts/      → compiler.ts + obfuscate.ts
 ├── test/         → bun test suites

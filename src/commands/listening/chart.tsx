@@ -7,7 +7,7 @@ import { defineCommand } from "../registry.ts";
 export const chartCommand = defineCommand({
   meta: {
     name: "chart",
-    description: "Top albums as an emoji grid (fmbot-style).",
+    description: "Top albums arranged as an emoji grid.",
     usage: "chart [user] [size] [period]",
     examples: ["chart", "chart 5x5 month", "chart @user 3x3 all"],
     category: "Listening",

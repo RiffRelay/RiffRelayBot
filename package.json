@@ -1,12 +1,12 @@
 {
-  "name": "listenbrainz-bot",
+  "name": "riff-relay-bot",
   "version": "1.0.0",
   "private": true,
-  "description": "fmbot-style ListenBrainz Discord bot — slash + prefix commands, React-driven embeds, AES-256-GCM encrypted user tokens. Ships as a single compiled, minified and obfuscated dist/bot.js.",
+  "description": "RiffRelay is an unofficial Discord music-history companion for ListenBrainz, with slash and prefix commands and encrypted user tokens.",
   "type": "module",
   "license": "MPL-2.0",
   "bin": {
-    "listenbrainz-bot": "dist/bot.js"
+    "riff-relay": "dist/bot.js"
   },
   "engines": {
     "bun": ">=1.3.14"

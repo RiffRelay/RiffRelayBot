@@ -15,7 +15,7 @@ describe("bot presence", () => {
     expect(updates).toHaveLength(1);
     expect(updates[0]).toMatchObject({
       status: PresenceUpdateStatus.DoNotDisturb,
-      activities: [{ name: "your scrobbles", type: ActivityType.Listening }],
+      activities: [{ name: "your listening history", type: ActivityType.Listening }],
     });
   });
 });

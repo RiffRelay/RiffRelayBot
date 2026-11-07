@@ -5,10 +5,10 @@ type PresenceUser = {
 };
 
 const ACTIVITIES = [
-  { name: "your scrobbles", type: ActivityType.Listening },
-  { name: "with your listening stats", type: ActivityType.Playing },
-  { name: "new scrobbles", type: ActivityType.Watching },
-  { name: "music on ListenBrainz", type: ActivityType.Listening },
+  { name: "your listening history", type: ActivityType.Listening },
+  { name: "the charts update", type: ActivityType.Watching },
+  { name: "music detective", type: ActivityType.Playing },
+  { name: "your next discovery", type: ActivityType.Listening },
 ];
 
 export function startPresenceRotation(user: PresenceUser): ReturnType<typeof setInterval> {

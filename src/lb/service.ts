@@ -12,7 +12,7 @@ export class BrainzService {
     this.mb = new MusicBrainzClient({ userAgent: this.userAgent });
   }
 
-  private readonly userAgent = "RiffRelay/1.0 (https://github.com/ListenBrainzBot/ListenBrainzBot)";
+  private readonly userAgent = "RiffRelay/1.0 (https://github.com/RiffRelay/RiffRelayBot)";
 
   /** A client authenticated with the given token. */
   authed(token: string): ListenBrainzClient {

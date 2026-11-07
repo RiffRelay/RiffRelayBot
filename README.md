@@ -1,6 +1,6 @@
 # RiffRelay
 
-![RiffRelay banner](https://raw.githubusercontent.com/ListenBrainzBot/Branding/main/assets/riffrelay-banner.png)
+![RiffRelay banner](https://raw.githubusercontent.com/RiffRelay/Branding/main/assets/riffrelay-banner.png)
 
 RiffRelay is an independent, unofficial Discord companion for music-listening history on ListenBrainz. Every command works as both a **slash command** and a **prefix command** (`!` by default), except `login` (slash-only — it takes a secret token, so the prefix handler refuses to run it to keep tokens out of chat history). All output is delivered as Discord embeds, composed with small React-style display components rendered to Components V2 payloads.
 
@@ -34,7 +34,7 @@ bun run start          # run the compiled artifact
 ```
 
 `listenbrainz-api` is installed as a package dependency from
-[`ListenBrainzBot/listenbrainz-api`](https://github.com/ListenBrainzBot/listenbrainz-api)
+[`RiffRelay/listenbrainz-api`](https://github.com/RiffRelay/listenbrainz-api)
 and bundled straight into `dist/bot.js`.
 
 ## Scripts

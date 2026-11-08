@@ -85,3 +85,9 @@ RiffRelay
 ## License
 
 [MPL-2.0](LICENSE)
+
+## Sponsorship
+
+RiffRelay is free to use. If you'd like to support ongoing development, the `bot` command
+occasionally features the developer profile and a GitHub Sponsors link. You can also visit
+[GitHub Sponsors](https://github.com/sponsors/kmmiio99o) directly.

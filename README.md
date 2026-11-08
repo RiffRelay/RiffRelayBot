@@ -2,7 +2,7 @@
 
 ![RiffRelay banner](https://raw.githubusercontent.com/RiffRelay/Branding/main/assets/riffrelay-banner.png)
 
-RiffRelay is an independent, unofficial Discord companion for music-listening history on ListenBrainz. Every command works as both a **slash command** and a **prefix command** (`!` by default), except `login` (slash-only — it takes a secret token, so the prefix handler refuses to run it to keep tokens out of chat history). All output is delivered as Discord embeds, composed with small React-style display components rendered to Components V2 payloads.
+RiffRelay is an independent, unofficial Discord companion for music-listening history on ListenBrainz. Every command works as both a **slash command** and a **prefix command** (`!` by default). `login` never accepts a token argument; it collects the secret through a private modal so it never appears in chat history. All output is delivered as Discord embeds, composed with small React-style display components rendered to Components V2 payloads.
 
 The bot ships as a **single compiled artifact** (`dist/bot.js`) produced by its own compiler (`scripts/compiler.ts`): bundled, minified and string-obfuscated. It does not run from the raw source tree in production.
 
@@ -74,7 +74,7 @@ See `.env.example`. `SLASH_GUILD_IDS` (comma-separated) limits slash registratio
 
 ## Security
 
-User ListenBrainz tokens are encrypted with **AES-256-GCM** before they touch disk. The master key is your `BRAINZBOT_ENC_KEY` (32 random bytes, 64 hex chars); if it is ever lost, stored tokens cannot be recovered — users must re-link with `!login`. The compiled artifact's string obfuscation is a deterrent against casual reading, not a cryptographic boundary — keep the Discord token and encryption key out of any public build.
+User ListenBrainz tokens are encrypted with **AES-256-GCM** before they touch disk. The master key is your `BRAINZBOT_ENC_KEY` (32 random bytes, 64 hex chars); if it is ever lost, stored tokens cannot be recovered — users must re-link with `/login` or `!login`. The compiled artifact's string obfuscation is a deterrent against casual reading, not a cryptographic boundary — keep the Discord token and encryption key out of any public build.
 
 ## Repository layout
 

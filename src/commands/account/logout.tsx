@@ -1,6 +1,7 @@
 import { Embed } from "../../display/components.tsx";
 import { SUCCESS_COLOR, unlinkedEmbed } from "../helpers.tsx";
 import { defineCommand } from "../registry.ts";
+import { loginActionButton } from "./login.tsx";
 
 export const logoutCommand = defineCommand({
   meta: {
@@ -11,7 +12,10 @@ export const logoutCommand = defineCommand({
   run: async (ctx) => {
     const removed = await ctx.db.unlinkUser(ctx.author.id);
     if (!removed) {
-      await ctx.reply({ display: [unlinkedEmbed()] });
+      await ctx.reply({
+        display: [unlinkedEmbed()],
+        actionButtons: [loginActionButton(ctx.author.id, "Connect ListenBrainz")],
+      });
       return;
     }
     await ctx.reply({

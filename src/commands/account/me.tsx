@@ -10,6 +10,7 @@ import {
   unlinkedEmbed,
 } from "../helpers.tsx";
 import { defineCommand } from "../registry.ts";
+import { loginActionButton } from "./login.tsx";
 
 export const meCommand = defineCommand({
   meta: {
@@ -22,7 +23,10 @@ export const meCommand = defineCommand({
   run: async (ctx) => {
     const linked = await ctx.db.getUser(ctx.author.id);
     if (!linked) {
-      await ctx.reply({ display: [unlinkedEmbed()] });
+      await ctx.reply({
+        display: [unlinkedEmbed()],
+        actionButtons: [loginActionButton(ctx.author.id, "Connect ListenBrainz")],
+      });
       return;
     }
     const lb = ctx.lb.anonymous;

@@ -6,7 +6,6 @@ import { toMessageData } from "../display/render.ts";
 import { handleButton } from "../handlers/button.tsx";
 import { handleInteraction } from "../handlers/interaction.tsx";
 import { handleMessage } from "../handlers/message.tsx";
-import { handleModalSubmit } from "../handlers/modal.tsx";
 import { handleSelectMenu } from "../handlers/select-menu.tsx";
 import { registerCommandsForGuild } from "../slash.ts";
 import { startPresenceRotation } from "./presence.ts";
@@ -62,13 +61,8 @@ export function wireEvents(runtime: BotRuntime): void {
         if (!interaction.replied && !interaction.deferred) interaction.deferUpdate().catch(() => {});
       });
     } else if (interaction.isButton()) {
-      handleButton(interaction).catch((err) => {
+      handleButton(interaction, runtime).catch((err) => {
         runtime.logger.error("button", `Handler error: ${(err as Error).message}`);
-        if (!interaction.replied && !interaction.deferred) interaction.deferUpdate().catch(() => {});
-      });
-    } else if (interaction.isModalSubmit()) {
-      handleModalSubmit(interaction, runtime).catch((err) => {
-        runtime.logger.error("modal", `Handler error: ${(err as Error).message}`);
         if (!interaction.replied && !interaction.deferred) interaction.deferUpdate().catch(() => {});
       });
     }

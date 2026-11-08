@@ -47,7 +47,7 @@ export function unlinkedEmbed(extra?: string): ReactElement {
     <Embed color={NEUTRAL_COLOR} title="Not connected yet">
       You haven't linked your ListenBrainz account.
       {"\n"}
-      Use {`\`login <your-listenbrainz-token>\``} (or `/login`) to connect.
+      Use `/login` or `!login` to connect through the private token form.
       {"\n"}
       You can find your token at{" "}
       <Embed_link href={lbSettingsUrl()}>listenbrainz.org/settings</Embed_link>

@@ -1,5 +1,6 @@
 import type { Listen } from "listenbrainz-api";
 import { Bold, Embed, LinkButton } from "../../display/components.tsx";
+import { discordTimestamp } from "../../display/format.ts";
 import {
   BRAND_COLOR,
   flattenListen,
@@ -15,7 +16,7 @@ import { defineCommand } from "../registry.ts";
 export const nowPlayingCommand = defineCommand({
   meta: {
     name: "nowplaying",
-    description: "Show what's currently playing.",
+    description: "Show what's playing now, or the most recent listen.",
     usage: "np [user]",
     examples: ["np", "np @user"],
     category: "Listening",
@@ -34,8 +35,11 @@ export const nowPlayingCommand = defineCommand({
       const now = await lb.getPlayingNow(resolved.username);
       listen = now.payload.listens[0];
     } catch {
-      // `playing-now` is the flakiest endpoint (timeouts / 502s) — fall back
-      // to the most recent listen so the command still works during LB hiccups.
+      // Fall back to the most recent listen if the playing-now endpoint fails.
+      fromHistory = true;
+    }
+
+    if (!listen) {
       const recent = await lb.getListens(resolved.username, { count: 1 });
       listen = recent.payload.listens[0];
       fromHistory = true;
@@ -44,7 +48,7 @@ export const nowPlayingCommand = defineCommand({
       await ctx.reply({
         display: [
           <Embed color={BRAND_COLOR} title={resolved.username}>
-            isn't listening to anything right now.
+            has no recent listens to show.
           </Embed>,
         ],
       });
@@ -115,7 +119,11 @@ export const nowPlayingCommand = defineCommand({
           color={BRAND_COLOR}
           title={
             fromHistory
-              ? `Last played by ${resolved.username}`
+              ? `Last played by ${resolved.username}${
+                  flat.listenedAt !== undefined
+                    ? ` · ${discordTimestamp(flat.listenedAt)}`
+                    : ""
+                }`
               : `${resolved.username} is listening to`
           }
           thumbnail={thumbnail}

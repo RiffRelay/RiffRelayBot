@@ -56,7 +56,6 @@ export async function handleButton(interaction: ButtonInteraction, runtime: BotR
   try {
     submitted = await modalSubmission;
   } catch {
-    runtime.logger.info("login", "Token form was not submitted before it expired.");
     await interaction.message.edit(toMessageData(loginMessage(interaction.user.id, "failed")));
     return;
   }

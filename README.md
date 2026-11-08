@@ -14,6 +14,7 @@ The bot ships as a **single compiled artifact** (`dist/bot.js`) produced by its 
 - **Statistics** — daily/weekly/monthly/yearly/all-time stats for artists, albums, tracks and recordings.
 - **Exploration** — artist/album/track pages with MusicBrainz metadata and cover art, `mood`, `fresh` (new releases), `search`.
 - **Social** — `similar` users and compare your taste with someone else.
+- **Support** — the `bot` command occasionally features a GitHub Sponsors link and developer profile.
 - **Encrypted storage** — user ListenBrainz tokens encrypted with AES-256-GCM (see Security below).
 - **Presence** — stays in Do Not Disturb and rotates through music-listening activities.
 
@@ -36,6 +37,10 @@ bun run start          # run the compiled artifact
 `listenbrainz-api` is installed as a package dependency from
 [`RiffRelay/listenbrainz-api`](https://github.com/RiffRelay/listenbrainz-api)
 and bundled straight into `dist/bot.js`.
+
+The bot invite requests only View Channels, Send Messages, Send Messages in Threads, Embed Links,
+and Use Application Commands. It does not request Administrator, Manage Messages, or Read Message
+History.
 
 ## Scripts
 

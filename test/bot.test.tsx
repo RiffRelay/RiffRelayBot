@@ -1,4 +1,10 @@
-import { describe, expect, test } from "bun:test";
+import { describe, expect, spyOn, test } from "bun:test";
+import { PermissionFlagsBits, PermissionsBitField } from "discord.js";
+import { discordInviteUrl } from "../src/bot/constants.ts";
+import { botCommand } from "../src/commands/general/bot.tsx";
+import { inviteCommand } from "../src/commands/general/invite.tsx";
+import { buildRegistry } from "../src/commands/index.ts";
+import type { CommandContext } from "../src/commands/types.ts";
 import { decryptToken, encryptToken } from "../src/db/crypto.ts";
 import {
   Bold,
@@ -11,8 +17,105 @@ import {
 } from "../src/display/components.tsx";
 import { discordTimestamp } from "../src/display/format.ts";
 import { toContainer, toMessageData } from "../src/display/render.ts";
+import type { DisplayContent } from "../src/display/types.ts";
 
 const MASTER_KEY = new Uint8Array(32).fill(7);
+
+async function renderBotResponse(randomValue: number): Promise<string> {
+  const replies: DisplayContent[] = [];
+  const randomSpy = spyOn(Math, "random").mockReturnValue(randomValue);
+  const context = {
+    lb: {
+      anonymous: {
+        getListenCount: async () => 1,
+        getArtistCount: async () => 1,
+        getServiceStatus: async () => ({ stats_age: 0, incoming_listen_count: 0 }),
+        isHealthy: async () => true,
+      },
+    },
+    db: { countUsers: async () => 1 },
+    client: {
+      ws: { ping: 20 },
+      uptime: 1000,
+      user: { id: "bot-id", displayAvatarURL: () => "https://discord.test/bot.png" },
+    },
+    reply: async (content: DisplayContent) => {
+      replies.push(content);
+    },
+  } as unknown as CommandContext;
+
+  try {
+    await botCommand.run(context);
+    return JSON.stringify(toMessageData(replies[0]!));
+  } finally {
+    randomSpy.mockRestore();
+  }
+}
+
+describe("bot command", () => {
+  test("includes status and has no separate sponsor command", () => {
+    const registry = buildRegistry();
+    expect(registry.get("bot")?.meta.name).toBe("bot");
+    expect(registry.get("sponsor")).toBeUndefined();
+    expect(registry.get("support")).toBeUndefined();
+  });
+
+  test("shows the sponsor card and button only on a random selection", async () => {
+    const hidden = await renderBotResponse(0.9);
+    expect(hidden).not.toContain("https://github.com/kmmiio99o.png");
+    expect(hidden).not.toContain("https://github.com/sponsors/kmmiio99o");
+
+    const shown = await renderBotResponse(0.1);
+    expect(shown).toContain("https://github.com/kmmiio99o.png");
+    expect(shown).toContain("https://github.com/sponsors/kmmiio99o");
+    expect(shown).toContain("Sponsor RiffRelay");
+  });
+
+  test("builds the invite URL from the shared helper", () => {
+    const url = new URL(discordInviteUrl("123"));
+    const permissions = new PermissionsBitField(
+      BigInt(url.searchParams.get("permissions") ?? "0"),
+    );
+
+    expect(url.searchParams.get("client_id")).toBe("123");
+    expect(url.searchParams.get("scope")).toBe("bot applications.commands");
+    for (const permission of [
+      PermissionFlagsBits.ViewChannel,
+      PermissionFlagsBits.SendMessages,
+      PermissionFlagsBits.SendMessagesInThreads,
+      PermissionFlagsBits.EmbedLinks,
+      PermissionFlagsBits.UseApplicationCommands,
+    ]) {
+      expect(permissions.has(permission)).toBe(true);
+    }
+    expect(permissions.has(PermissionFlagsBits.Administrator)).toBe(false);
+    expect(permissions.has(PermissionFlagsBits.ManageMessages)).toBe(false);
+    expect(permissions.has(PermissionFlagsBits.ReadMessageHistory)).toBe(false);
+  });
+});
+
+describe("invite command", () => {
+  test("renders a branded invite card with the permission summary and CTA", async () => {
+    const replies: DisplayContent[] = [];
+    const context = {
+      client: {
+        user: { id: "123", displayAvatarURL: () => "https://discord.test/avatar.png" },
+      },
+      reply: async (content: DisplayContent) => {
+        replies.push(content);
+      },
+    } as unknown as CommandContext;
+
+    await inviteCommand.run(context);
+
+    const rendered = JSON.stringify(toMessageData(replies[0]!));
+    expect(rendered).toContain("Add RiffRelay to your server");
+    expect(rendered).toContain("https://discord.test/avatar.png");
+    expect(rendered).toContain("View Channels · Send Messages");
+    expect(rendered).toContain("Invite RiffRelay");
+    expect(rendered).toContain("permissions=277025410048");
+  });
+});
 
 describe("token encryption", () => {
   test("round-trips a token", async () => {

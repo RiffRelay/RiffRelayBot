@@ -1,10 +1,13 @@
 import { lbHomeUrl } from "listenbrainz-api";
+import {
+  BOT_URLS,
+  discordInviteUrl,
+  REFERENCE_LISTENBRAINZ_USER,
+  SPONSOR_CARD_DISPLAY_CHANCE,
+} from "../../bot/constants.ts";
 import { Bold, Code, Embed, LinkButton } from "../../display/components.tsx";
 import { BRAND_COLOR, formatNumber } from "../helpers.tsx";
 import { defineCommand } from "../registry.ts";
-
-/** Reference user used to probe that the stats pipeline is answering. */
-const REFERENCE_USER = "iliekcomputers";
 
 export const botCommand = defineCommand({
   meta: {
@@ -15,9 +18,10 @@ export const botCommand = defineCommand({
     slow: true,
   },
   run: async (ctx) => {
+    const showSponsorCard = Math.random() < SPONSOR_CARD_DISPLAY_CHANCE;
     const [listenCount, artistCount, service, healthy, linkedCount, ping] = await Promise.all([
-      referenceCount(() => ctx.lb.anonymous.getListenCount(REFERENCE_USER)),
-      referenceCount(() => ctx.lb.anonymous.getArtistCount(REFERENCE_USER)),
+      referenceCount(() => ctx.lb.anonymous.getListenCount(REFERENCE_LISTENBRAINZ_USER)),
+      referenceCount(() => ctx.lb.anonymous.getArtistCount(REFERENCE_LISTENBRAINZ_USER)),
       ctx.lb.anonymous.getServiceStatus(),
       ctx.lb.anonymous.isHealthy(),
       ctx.db.countUsers(),
@@ -25,7 +29,7 @@ export const botCommand = defineCommand({
     ]);
 
     const bot = ctx.client.user;
-    const inviteUrl = `https://discord.com/api/oauth2/authorize?client_id=${bot.id}&permissions=2147483648&scope=bot%20applications.commands`;
+    const inviteUrl = discordInviteUrl(bot.id);
 
     await ctx.reply({
       display: [
@@ -45,16 +49,35 @@ export const botCommand = defineCommand({
           {"\n"}Incoming queue: <Code>{formatNumber(service.incoming_listen_count)}</Code>
           {"\n"}
           {"\n"}
-          <Bold>Reference user (`{REFERENCE_USER}`)</Bold>
+          <Bold>Reference user (`{REFERENCE_LISTENBRAINZ_USER}`)</Bold>
           {"\n"}Listens:{" "}
           <Code>{listenCount === null ? "unavailable" : formatNumber(listenCount)}</Code>
           {"\n"}Artists:{" "}
           <Code>{artistCount === null ? "unavailable" : formatNumber(artistCount)}</Code>
         </Embed>,
+        ...(showSponsorCard
+          ? [
+              <Embed color={BRAND_COLOR} title="Support RiffRelay" thumbnail={BOT_URLS.githubAvatar}>
+                Built by [kmmiio99o]({BOT_URLS.githubProfile}). If RiffRelay has been useful,
+                sponsorship helps support its ongoing development. Contributions are optional,
+                and the bot remains free to use.
+              </Embed>,
+            ]
+          : []),
       ],
       buttons: [
         <LinkButton key="lb-site" url={lbHomeUrl()} label="ListenBrainz site" />,
         <LinkButton key="invite" url={inviteUrl} label="Invite BrainzBot" />,
+        ...(showSponsorCard
+          ? [
+              <LinkButton
+                key="sponsor"
+                url={BOT_URLS.githubSponsors}
+                label="Sponsor RiffRelay"
+                emoji="💜"
+              />,
+            ]
+          : []),
       ],
     });
   },

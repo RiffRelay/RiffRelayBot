@@ -1,4 +1,5 @@
-import { Embed } from "../../display/components.tsx";
+import { discordInviteUrl } from "../../bot/constants.ts";
+import { Bold, Embed, LinkButton } from "../../display/components.tsx";
 import { BRAND_COLOR } from "../helpers.tsx";
 import { defineCommand } from "../registry.ts";
 
@@ -9,13 +10,24 @@ export const inviteCommand = defineCommand({
     category: "General",
   },
   run: async (ctx) => {
-    const clientId = ctx.client.user.id;
-    const url = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&permissions=2147483648&scope=bot%20applications.commands`;
+    const bot = ctx.client.user;
     await ctx.reply({
       display: [
-        <Embed color={BRAND_COLOR} title="Invite BrainzBot">
-          Click here to add me to your server: {url}
+        <Embed color={BRAND_COLOR} title="Add RiffRelay to your server" thumbnail={bot.displayAvatarURL()}>
+          Bring your ListenBrainz listening history into Discord.
+          {"\n\n"}
+          <Bold>Permissions requested</Bold>
+          {"\n"}View Channels · Send Messages · Send Messages in Threads
+          {"\n"}Embed Links · Use Application Commands
         </Embed>,
+      ],
+      buttons: [
+        <LinkButton
+          key="invite"
+          url={discordInviteUrl(bot.id)}
+          label="Invite RiffRelay"
+          emoji="➕"
+        />,
       ],
     });
   },
